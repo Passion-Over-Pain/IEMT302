@@ -1,6 +1,6 @@
 # Emerging Technologies: IEMT302
 
-This repository contains my work for the IEMT302 Emerging Technologies module at Nelson Mandela University. It includes topic-based submissions, practical work, and assessment material developed throughout the semester.
+This repository contains the work of *<b>Tinotenda Mhedziso | s227284240</b>* for the <b>IEMT302 | Emerging Technologies</b> module at Nelson Mandela University. It includes topic-based submissions, practical work, and assessment material developed throughout the semester.
 
 ## Table of Contents
 
