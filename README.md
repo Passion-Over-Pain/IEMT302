@@ -1,5 +1,8 @@
 # Emerging Technologies: IEMT302
 
+![Cyber](https://github.com/user-attachments/assets/fc3fbfd4-b6c1-4205-a931-6c4c3c0cfe93)
+
+
 This repository contains the work of *<b>Tinotenda Mhedziso | s227284240</b>* for the <b>IEMT302 | Emerging Technologies</b> module at Nelson Mandela University. It includes topic-based submissions, practical work, and assessment material developed throughout the semester.
 
 ## Table of Contents
