@@ -1,0 +1,18 @@
+Based on an ML linear regression model:Scenario 1: Loan Repayment Duration Prediction
+To predict how many months a person will take to fully repay a loan, based on financial and personal factors.
+Features:
+•	Age: age of individual (e.g. 28)
+•	Income: monthly income (e.g. 10000)
+•	Loan Amount: the requested loan amount (e.g. 5000)
+•	Credit Score: individual’s current credit score (the higher the better) (e.g. 570)
+•	Current Debt: total outstanding debt from other sources (e.g. 2500)
+•	Interest Rate: interest rate of the loan agreement (e.g. 6.5%)
+Label: the number of months the person will take to finish repaying the loan.
+Training Data: the bank’s historical records of past loans and their repayment durations.
+Expected Output:
+A continuous value representing the estimated number of months (e.g. 18.7 months) a client will need to repay the loan in full.
+Formula:
+y (months to repay) = b + w₁·age + w₂·income + w₃·loan_amount + w₄·credit_score + w₅·current_debt + w₆·interest_rate 
+Create a website, vanilla HTML, CSS and JavaScript to allow a business, let's call it Bad Debt, to calculate how long a person will take to repay their loan. 
+Use a darkmode theme, primary colours being Black, green and gold. Give me separate files for the index.html, style.css, function.js, that are linked ofcourse, put all these files under a subfolder called "AI agent exercise". 
+Don't delete any files in the current folder.
