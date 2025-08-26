@@ -2,3 +2,5 @@
 2. This chatbot was built prior to this course, in my own ventures but should still get the job done
 3. NLP is a fascinating concept, one I might consider for the Final Report 
 4. The chatbot, Passion, is built on OpenAI's GPT-4 - works well with the WISH, Verbs, Sentence Type Handling etc
+5. As you can see, the code uses nodes, each node resembles a user's current point in the conversation
+6. It looks messy but it works :) - Programmers 
