@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particle Brain</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let particles = [];
+      let brainImg;
+      let particleDensity = 8; // Lower = more particles (sample every X pixels)
+      let particleSize = 3;
+      let interactionRadius = 100;
+
+      // Configuration - easy to modify
+      const config = {
+        particleColor: [0, 255, 136], // Green RGB
+        backgroundColor: 0, // Black
+        glowIntensity: 20,
+        mouseRepulsion: true, // true = repel, false = attract
+        repulsionStrength: 0.5,
+        returnSpeed: 0.1,
+        particleSize: 3,
+      };
+
+      function preload() {
+        // We'll create a brain shape programmatically since we can't load external images
+        // This creates a simple brain-like silhouette
+      }
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+
+        // Create brain shape particles
+        createBrainParticles();
+      }
+
+      function createBrainParticles() {
+        particles = [];
+
+        // Create a brain-like shape using mathematical curves
+        let centerX = width / 2;
+        let centerY = height / 2;
+        let brainWidth = 300;
+        let brainHeight = 250;
+
+        // Sample points to create brain outline
+        for (
+          let x = centerX - brainWidth / 2;
+          x < centerX + brainWidth / 2;
+          x += particleDensity
+        ) {
+          for (
+            let y = centerY - brainHeight / 2;
+            y < centerY + brainHeight / 2;
+            y += particleDensity
+          ) {
+            // Create brain-like shape using distance and noise
+            let dx = (x - centerX) / brainWidth;
+            let dy = (y - centerY) / brainHeight;
+
+            // Elliptical base with bulges for brain lobes
+            let angle = atan2(dy, dx);
+            let radius = 0.5;
+
+            // Add bumps for brain lobes
+            radius += sin(angle * 3) * 0.1;
+            radius += noise(x * 0.01, y * 0.01) * 0.15;
+
+            let dist = sqrt(dx * dx + dy * dy);
+
+            // Only create particles inside the brain shape
+            if (dist < radius) {
+              // Add more density variation for brain folds
+              if (random() < 0.7) {
+                // 70% fill for organic look
+                particles.push(new Particle(x, y));
+              }
+            }
+          }
+        }
+
+        console.log(`Created ${particles.length} particles`);
+      }
+
+      function draw() {
+        background(config.backgroundColor);
+
+        // Update and draw all particles
+        for (let p of particles) {
+          p.update();
+          p.display();
+        }
+
+        // Optional: Show interaction radius when mouse is pressed
+        if (mouseIsPressed) {
+          noFill();
+          stroke(
+            config.particleColor[0],
+            config.particleColor[1],
+            config.particleColor[2],
+            50
+          );
+          strokeWeight(2);
+          circle(mouseX, mouseY, interactionRadius * 2);
+        }
+      }
+
+      class Particle {
+        constructor(x, y) {
+          this.homeX = x;
+          this.homeY = y;
+          this.x = x;
+          this.y = y;
+          this.vx = 0;
+          this.vy = 0;
+          this.size = config.particleSize + random(-1, 1);
+        }
+
+        update() {
+          // Mouse interaction
+          let dx = mouseX - this.x;
+          let dy = mouseY - this.y;
+          let dist = sqrt(dx * dx + dy * dy);
+
+          if (dist < interactionRadius) {
+            let force = (interactionRadius - dist) / interactionRadius;
+            let angle = atan2(dy, dx);
+
+            if (config.mouseRepulsion) {
+              // Repel from mouse
+              this.vx -= cos(angle) * force * config.repulsionStrength;
+              this.vy -= sin(angle) * force * config.repulsionStrength;
+            } else {
+              // Attract to mouse
+              this.vx += cos(angle) * force * config.repulsionStrength;
+              this.vy += sin(angle) * force * config.repulsionStrength;
+            }
+          }
+
+          // Return to home position
+          let homeForceX = (this.homeX - this.x) * config.returnSpeed;
+          let homeForceY = (this.homeY - this.y) * config.returnSpeed;
+
+          this.vx += homeForceX;
+          this.vy += homeForceY;
+
+          // Apply velocity with damping
+          this.vx *= 0.95;
+          this.vy *= 0.95;
+
+          this.x += this.vx;
+          this.y += this.vy;
+        }
+
+        display() {
+          // Calculate distance from home for color variation
+          let distFromHome = dist(this.x, this.y, this.homeX, this.homeY);
+          let excitement = constrain(distFromHome / 50, 0, 1);
+
+          // Glow effect
+          noStroke();
+          fill(
+            config.particleColor[0],
+            config.particleColor[1],
+            config.particleColor[2],
+            30
+          );
+          circle(this.x, this.y, this.size * 3);
+
+          // Core particle
+          fill(
+            config.particleColor[0] + excitement * 50,
+            config.particleColor[1],
+            config.particleColor[2] - excitement * 50,
+            200 + excitement * 55
+          );
+          circle(this.x, this.y, this.size);
+        }
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+        createBrainParticles(); // Recreate particles for new size
+      }
+
+      function keyPressed() {
+        // Press 'R' to toggle repulsion/attraction
+        if (key === "r" || key === "R") {
+          config.mouseRepulsion = !config.mouseRepulsion;
+          console.log(
+            "Mouse mode:",
+            config.mouseRepulsion ? "REPEL" : "ATTRACT"
+          );
+        }
+
+        // Press 'S' to save screenshot
+        if (key === "s" || key === "S") {
+          saveCanvas("particle-brain", "png");
+        }
+
+        // Press SPACE to reset particles
+        if (key === " ") {
+          createBrainParticles();
+        }
+      }
+
+      // Instructions
+      console.log("=== CONTROLS ===");
+      console.log("Move mouse to interact");
+      console.log("Press R to toggle Repel/Attract");
+      console.log("Press SPACE to reset");
+      console.log("Press S to save screenshot");
+    </script>
+  </body>
+</html>
